@@ -5,8 +5,6 @@
  * @author Hu siyuan
  */
 function optionalChain(source) {
-  // console.log('\n\nsource', source, typeof source, '\n\n')
-
   const replacer = (str) => {
     const isFunc = str.endsWith('()')
     // 去除末尾()，切分变量
@@ -20,6 +18,7 @@ function optionalChain(source) {
       pre = pre + '.' + vars[i]
       ret += ' && ' + pre
     }
+    ret += ' && ' + pre
 
     return ret + (isFunc ? '()' : '.')
   }
@@ -30,4 +29,3 @@ function optionalChain(source) {
 }
 
 module.exports = optionalChain
-
