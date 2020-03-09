@@ -10,5 +10,17 @@ module.exports = {
   },
   output: {
     path: resolve('../dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: [
+          {
+            loader: resolve('../loader/optional-chain.js')
+          }
+        ]
+      }
+    ]
   }
 }

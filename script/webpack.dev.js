@@ -4,5 +4,8 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const webpackCommonConf = require('./webpack.common')
 
 module.exports = smart(webpackCommonConf, {
-  mode: 'production'
+  mode: 'development',
+  plugins: [
+    new CleanWebpackPlugin()
+  ]
 })
