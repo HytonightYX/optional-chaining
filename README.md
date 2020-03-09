@@ -39,6 +39,8 @@ console.log(adventurer.someNonExistentMethod?.())
 
 更多语法可以参见 [TC39](https://github.com/tc39/proposal-optional-chaining#syntax)
 
+
+
 ## 2.思路
 
 ```javascript
@@ -59,13 +61,19 @@ console.log(obj.foo.bar?.baz)
 
 （3） 对于函数，`fn?.()` 相当于 `fn && fn()`
 
+
+
 ### webpack loader
 
 本质还是字符串的修改，只要拿到代码字符串就可以做，那么写一个 `webpack-loader` 做正则匹配也可行。
 
+
+
 ### babel loader
 
-可选链是 ES-next 的内容，第一时间会想到用 `babel`。因此写一个 `babel loader` 操作 AST 应该也可以做。
+可选链是 ES-next 的内容，容易想到用 `babel`。因此写一个 `babel loader` 操作 AST 应该也可以做。
+
+
 
 ## 3.配置开发环境
 
@@ -78,6 +86,8 @@ yarn add -D webpack webpack-cli
 // env-var
 yarn add cross-env
 ```
+
+
 
 ## 4.webpack loader 实现
 
@@ -108,3 +118,10 @@ yarn add cross-env
 `x.y.z?. => x && x.y && x.y.z`
 
 再判断一下结尾，如果有 `()` 则代表是函数，不加 `.`，否则带个 `.`
+
+
+
+## 5.单元测试
+
+[搭建测试环境]([https://webpack.docschina.org/contribute/writing-a-loader/#%E6%B5%8B%E8%AF%95](https://webpack.docschina.org/contribute/writing-a-loader/#测试))
+

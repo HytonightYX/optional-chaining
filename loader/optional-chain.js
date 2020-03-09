@@ -2,7 +2,7 @@
  * Optional Chain transformer
  * 
  * @param {string} source 待处理代码字符串
- * @author Hu siyuan
+ * @author HuSiyuan
  */
 function optionalChain(source) {
   const replacer = (str) => {
