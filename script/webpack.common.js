@@ -20,6 +20,12 @@ module.exports = {
             loader: resolve('../loader/optional-chain.js')
           }
         ]
+      },
+      {
+        test: /\.js$/,
+        loader: 'eslint-loader',
+        enforce: "pre",
+        include: [path.resolve(__dirname, 'src')], // 指定检查的目录
       }
     ]
   }
