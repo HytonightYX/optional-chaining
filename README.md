@@ -1,4 +1,4 @@
-# optional-chaining
+# optional-chaining-loader
 
 **todo list**
 
@@ -15,9 +15,9 @@
 
 根据 [MDN 文档](<[https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/%E5%8F%AF%E9%80%89%E9%93%BE](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/可选链)>)
 
-> **可选链**操作符**`?.`**能够去读取一个被连接对象的深层次的属性的值而无需明确校验链条上每一个引用的有效性。**`?.`**运算符功能类似于**`.`**运算符，不同之处在于如果链条上的一个引用是[nullish](https://developer.mozilla.org/en-US/docs/Glossary/nullish) ([`null`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/null) 或 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined))，**`.`**操作符会引起一个错误，**`?.`**操作符取而代之的是会按照**短路计算**的方式返回一个 undefined。当**`?.`**操作符用于函数调用时，如果该函数不存在也将会返回 undefined。
+> 可选链操作符**`?.`**能够去读取一个被连接对象的深层次的属性的值而无需明确校验链条上每一个引用的有效性。`?.`运算符功能类似于`.`运算符，不同之处在于如果链条上的一个引用是[nullish](https://developer.mozilla.org/en-US/docs/Glossary/nullish) ([`null`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/null) 或 [`undefined`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/undefined))，**`.`**操作符会引起一个错误，**`?.`**操作符取而代之的是会按照短路计算的方式返回一个 undefined。当`?.`操作符用于函数调用时，如果该函数不存在也将会返回 undefined。
 >
-> 当访问链条上可能存在的属性却不存在时，**`?.`**操作符将会使表达式更短和更简单。当不能保证哪些属性是必需的时，**`?.`**操作符对于探索一个对象的内容是很有帮助的。
+> 当访问链条上可能存在的属性却不存在时，`?.`操作符将会使表达式更短和更简单。当不能保证哪些属性是必需的时，`?.`操作符对于探索一个对象的内容是很有帮助的。
 
 例子
 
@@ -73,23 +73,11 @@ console.log(obj.foo.bar?.baz)
 
 可选链是 ES-next 的内容，容易想到用 `babel`。因此写一个 `babel loader` 操作 AST 应该也可以做。
 
-
-
-## 3.配置开发环境
-
-显然，我们需要 webpack
-
-```c
-yarn init
-// webpack
-yarn add -D webpack webpack-cli
-// env-var
-yarn add cross-env
-```
+[@babel/plugin-proposal-optional-chaining](https://github.com/babel/babel/blob/master/packages/babel-plugin-proposal-optional-chaining/src/index.js)
 
 
 
-## 4.webpack loader 实现
+## 3.webpack loader 实现
 
 ### 正则匹配
 
@@ -105,7 +93,7 @@ yarn add cross-env
 
 ##### 匹配函数后跟的`()`
 
-`(\(\))?`
+`(\(\))?`，为了判别是否为函数
 
 最终得到
 
@@ -121,7 +109,37 @@ yarn add cross-env
 
 
 
-## 5.单元测试
+### 代码实现
 
-[搭建测试环境]([https://webpack.docschina.org/contribute/writing-a-loader/#%E6%B5%8B%E8%AF%95](https://webpack.docschina.org/contribute/writing-a-loader/#测试))
+```javascript
+/**
+ * webpack loader
+ * Optional Chain Transformer
+ * 
+ * @param {string} source 待处理代码字符串
+ * @author HuSiyuan
+ */
+function optionalChain(source) {
+  const replacer = (str) => {
+    const isFunc = str.endsWith('()')
+    // 去除末尾()，切分变量
+    const vars = str.replace('()', '').split(/\.|\?\./)
+    // 去除末尾空字符
+    vars.pop()
 
+    let ret = vars[0]
+    let pre = ret
+    for (let i = 1; i < vars.length; i++) {
+      pre = pre + '.' + vars[i]
+      ret += ' && ' + pre
+    }
+    ret += ' && ' + pre
+
+    return ret + (isFunc ? '()' : '.')
+  }
+
+  const replaced = source.replace(/([\w\$_\?\.]+\?\.)(\(\))?/g, replacer)
+
+  return replaced
+}
+```
