@@ -1,5 +1,6 @@
 /**
- * Optional Chain transformer
+ * webpack loader
+ * Optional Chain Transformer
  * 
  * @param {string} source 待处理代码字符串
  * @author HuSiyuan
@@ -8,14 +9,15 @@ function optionalChain(source) {
   const replacer = (str) => {
     const isFunc = str.endsWith('()')
     // 去除末尾()，切分变量
-    const vars = str.replace('()', '').split(/\.|\?\./)
+    const varList = str.replace('()', '').split(/\.|\?\./)
     // 去除末尾空字符
-    vars.pop()
+    varList.pop()
 
-    let ret = vars[0]
+    const defaultListIndex = 0
+    let ret = varList[defaultListIndex]
     let pre = ret
-    for (let i = 1; i < vars.length; i++) {
-      pre = pre + '.' + vars[i]
+    for (let i = 1; i < varList.length; i++) {
+      pre = pre + '.' + varList[i]
       ret += ' && ' + pre
     }
     ret += ' && ' + pre
@@ -23,9 +25,7 @@ function optionalChain(source) {
     return ret + (isFunc ? '()' : '.')
   }
 
-  const replaced = source.replace(/([\w\$_\?\.]+\?\.)(\(\))?/g, replacer)
-
-  return replaced
+  return source.replace(/([\w\$_\?\.]+\?\.)(\(\))?/g, replacer)
 }
 
 module.exports = optionalChain
