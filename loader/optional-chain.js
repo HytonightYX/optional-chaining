@@ -3,13 +3,16 @@
  * Optional Chain Transformer
  * 
  * @param {string} source 待处理代码字符串
- * @author HuSiyuan
+ * @author Husiyuan
  */
 function optionalChain(source) {
   const replacer = (str) => {
-    const isFunc = str.endsWith('()')
-    // 去除末尾()，切分变量
-    const varList = str.replace('()', '').split(/\.|\?\./)
+    // 判断是否为函数 fn?.(), 数组arr?.[1] 或对象属性, obj?.['name']
+    const endBrackets = str[str.length - 1]
+    const haveEndBrackets = (endBrackets === '(' || endBrackets === '[')
+
+    // 去除末尾 ( 或 [，切分变量
+    const varList = str.replace(/[\[\(]/g, '').split(/\.|\?\./)
     // 去除末尾空字符
     varList.pop()
 
@@ -22,10 +25,10 @@ function optionalChain(source) {
     }
     ret += ' && ' + pre
 
-    return ret + (isFunc ? '()' : '.')
+    return ret + (haveEndBrackets ? endBrackets : '.')
   }
 
-  return source.replace(/([\w\$_\?\.]+\?\.)(\(\))?/g, replacer)
+  return source.replace(/([\w\$_\?\.]+\?\.)[(\(\[]?/g, replacer)
 }
 
 module.exports = optionalChain
