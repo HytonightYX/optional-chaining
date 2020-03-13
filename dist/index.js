@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("const adventurer = {\n  name: 'Alice',\n  cat: {\n    name: 'Dinah'\n  },\n  dog: {\n    name: 'WOW',\n    fn: function () {\n      console.log(\"I'm a dog!\")\n    }\n  },\n}\n\nconst dogName = adventurer && adventurer.dog && adventurer.dog.name\nconsole.log(dogName)\n\nadventurer && adventurer.dog && adventurer.dog.fn && adventurer.dog.fn()\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("const adventurer = {\n  name: 'Alice',\n  cat: {\n    name: 'Dinah'\n  },\n  dog: {\n    name: 'WOW',\n    fn: function () {\n      console.log(\"I'm a dog!\")\n    }\n  },\n}\n\nconst dogName = adventurer && adventurer.dog && adventurer.dog.name\nconst catName = adventurer && adventurer.cat && adventurer.cat['name']\nconsole.log(dogName)\nconsole.log(catName)\nadventurer && adventurer.dog && adventurer.dog.fn && adventurer.dog.fn()\n\nlet array = [0, '1']\nconsole.log(array && array[0], array && array[1], array && array[2])\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ })
 
